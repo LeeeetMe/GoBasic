@@ -1,7 +1,8 @@
 package main
 
 import (
-	. "fmt"
+	_ "fmt"
+	b "hello/base"
 )
 
 var (
@@ -11,8 +12,7 @@ var (
 )
 
 func main() {
-	Println("HelloWorld")
-	Println("爱情是什么味道")
+
 	name = "赵英涵"
 	age = "28"
 	sex = true
@@ -21,10 +21,10 @@ func main() {
 	//read_str, _ := io_reader.ReadString('\n')
 	//Println(read_str)
 
-	var x int
-	var y string
-	Scanln(&x, &y)
-	Printf("x = %d 类型为：%T\n", x, x)
+	// var x int
+	// var y string
+	// Scanln(&x, &y)
+	// Printf("x = %d 类型为：%T\n", x, x)
 	//Printf("y = %s 类型为：%T\n", y, y)
 	// 使用scanf时，需要注意的是 要按照字符串内的格式进行输入，如下：输入100,帅
 	//Scanf("输入%d,%s", &x,&y)
@@ -35,5 +35,13 @@ func main() {
 	// basic_pro.Goto_obj()
 	// 随机数
 	// basic_pro.Random_obj()
-	//
+	// string
+	// b.String_obj()
+	// function
+	// b.VariableParameter()
+	b.IncrementTest()
+	// parameter
+	// b.ValAndRefParameter()
+	// defer
+	// b.DeferBasic()
 }
