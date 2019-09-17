@@ -39,9 +39,18 @@ func main() {
 	// b.String_obj()
 	// function
 	// b.VariableParameter()
-	b.IncrementTest()
+	// b.IncrementTest()
 	// parameter
 	// b.ValAndRefParameter()
 	// defer
 	// b.DeferBasic()
+	// 指针
+	// 指针变量
+	// b.Pointer_value()
+	// 数组指针
+	// b.Pointer_array()
+	// 函数指针
+	// b.Point_func()
+	// 结构体
+	b.Struct_test()
 }
