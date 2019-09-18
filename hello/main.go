@@ -52,5 +52,6 @@ func main() {
 	// 函数指针
 	// b.Point_func()
 	// 结构体
-	b.Struct_test()
+	// b.Struct_test()
+	b.Inherit_struct()
 }

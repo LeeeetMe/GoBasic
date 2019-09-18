@@ -4,12 +4,16 @@ import (
 	. "fmt"
 )
 
-// 创建结构体
 type Books struct {
 	title   string
 	author  string
 	subject string
 	book_id int
+}
+
+type Person struct {
+	int
+	string
 }
 
 func Struct_test() {
@@ -44,5 +48,56 @@ func Struct_test() {
 	// 4
 	b4 := Books{"如梦令", "李清照", "抒情", 4}
 	Println(b4)
+	/*
+		匿名字段：
+			1.当字段没有名字时，直接使用字段类型表示该字段的值
+			2.在同一结构体中匿名字段不可以重复
+	*/
+	var p Person = Person{
+		11,
+		"单身狗",
+	}
+	Println(p.int, p.string)
 
+}
+
+func Inherit_struct() {
+	/*
+		继承：结构体的嵌套
+			1.在结构体中通过匿名字段的方式将其他结构体嵌入进来，可以直接通过.的方式访问嵌套的字段
+	*/
+	// 1
+	type Food struct {
+		category string
+		weight   int
+	}
+
+	type Chips struct {
+		price int
+		f     Food
+		num   int
+	}
+
+	type Noodles struct {
+		Food
+		price    int
+		docoment string
+	}
+
+	var n Noodles
+	n.category = "主食"
+	n.weight = 200
+	n.price = 5
+	n.docoment = "你看这面，又多又好吃"
+	Println(n)
+	// 2
+	var c Chips = Chips{
+		f: Food{
+			category: "零食",
+			weight:   180,
+		},
+		price: 10,
+		num:   2,
+	}
+	Println(c, c.f.category, c.f.weight, c.price, c.num)
 }
