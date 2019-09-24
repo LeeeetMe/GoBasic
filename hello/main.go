@@ -53,5 +53,9 @@ func main() {
 	// b.Point_func()
 	// 结构体
 	// b.Struct_test()
-	b.Inherit_struct()
+	// b.Inherit_struct()
+	// 接口
+	// b.NestingInterface()
+	// 反射 reflect
+	b.Reflect_Test()
 }

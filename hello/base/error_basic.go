@@ -14,5 +14,5 @@ type areaError struct {
 }
 
 func Error_test() {
-
+	Println("i don't know")
 }
