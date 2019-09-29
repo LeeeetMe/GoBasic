@@ -101,3 +101,41 @@ func Inherit_struct() {
 	}
 	Println(c, c.f.category, c.f.weight, c.price, c.num)
 }
+
+type People struct {
+	name string
+	age  int
+}
+
+type Children struct {
+	People
+	interest string
+	address  string
+}
+
+func (p People) run() {
+	Printf("我是父类的Run，%s 正在奔跑，他已经%d岁了\n", p.name, p.age)
+}
+func (c Children) run() {
+	Printf("你好，我是%s今年%d岁了，我家在%s\n", c.name, c.age, c.address)
+}
+func (c Children) sayHello() {
+	Printf("我是子类的Run你好，我是%s今年%d岁了，我家在%s\n", c.name, c.age, c.address)
+}
+
+func Struct_function() {
+	/*
+		struct之间的嵌套子类，父类：
+			父类不可以调用子类的函数
+			子类可以调用父类的函数，子类也可以重写父类的方法，调用时使用就近原则
+	*/
+	var c1 Children = Children{
+		People: People{
+			name: "alex",
+			age:  100,
+		},
+		address: "东北",
+	}
+	c1.sayHello()
+	c1.run()
+}

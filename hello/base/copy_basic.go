@@ -1,4 +1,4 @@
-package basic_obj
+package base
 
 import (
 	. "fmt"
