@@ -8,8 +8,8 @@ import (
 )
 
 type ConfigInfo struct {
-	ServerConf Server `ini:server`
-	MysqlConf  MySql  `ini:mysql`
+	ServerConf Server `ini:"server"`
+	MysqlConf  MySql  `ini:"mysql"`
 }
 type Server struct {
 	host string
@@ -23,10 +23,12 @@ type MySql struct {
 }
 
 func ReadFile(path string) []string {
+	// 返回byte[]切片
 	file, err := ioutil.ReadFile(path)
 	if err != nil {
 		Println("this has err：", err)
 	}
+	// 转换成列表返回
 	strLst := strings.Split(string(file), "\n")
 	return strLst
 }
@@ -42,6 +44,7 @@ func ParseIni(str []string, result interface{}) {
 						....
 	*/
 	getValue := reflect.ValueOf(result)
+	getType := reflect.TypeOf(result).Elem()
 	if getValue.Kind() != reflect.Ptr {
 		Errorf("传进来的result不是一个指针,%v", getValue.Kind())
 	} else {
@@ -54,6 +57,7 @@ func ParseIni(str []string, result interface{}) {
 	}
 	// 声明节点变量
 	var lastSection string
+	var lastStruct struct
 	for index, val := range str {
 		// 去除前后空格
 		line := strings.TrimSpace(val)
@@ -74,6 +78,22 @@ func ParseIni(str []string, result interface{}) {
 		} else {
 			Printf("小朋友不要乱按键盘，输入有问题，值：%s行号：%d\n", line, index+1)
 		}
-		Println(lastSection)
+		Println(lastSection,getType)
+		
 	}
+}
+
+func getLastStruct(structName string) struct {
+	for index := 0; index < getType.NumField(); index++ {
+			fieldType := getType.Field(index)
+			tagValue := fieldType.Tag.Get("ini")
+			// Println("value is ", fieldType)
+			// fieldType.Tag.Get(lastSection)
+			Println("tagValue is",tagValue)
+			if tagValue == lastSection {
+				Println("这是一个")
+				structV := getValue.Elem().Field(index)
+				continue
+			}
+		}
 }
