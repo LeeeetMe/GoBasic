@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"reflect"
 	"strings"
+	// "errors"
 )
 
 type ConfigInfo struct {
@@ -12,14 +13,14 @@ type ConfigInfo struct {
 	MysqlConf  MySql  `ini:"mysql"`
 }
 type Server struct {
-	host string
-	port int
+	Host string `ini:"host"`
+	Port int    `ini:"port"`
 }
 type MySql struct {
-	user     string
-	password string
-	host     string
-	port     int
+	User     string `ini:"user"`
+	Password string `ini:"password"`
+	Host     string `ini:"host"`
+	Port     int    `ini:"port"`
 }
 
 func ReadFile(path string) []string {
@@ -33,7 +34,7 @@ func ReadFile(path string) []string {
 	return strLst
 }
 
-func ParseIni(str []string, result interface{}) {
+func ParseIni(str []string, result interface{}) (err error) {
 	/*
 		1.判断result是否为结构体指针
 		2.遍历字符串数组
@@ -46,18 +47,17 @@ func ParseIni(str []string, result interface{}) {
 	getValue := reflect.ValueOf(result)
 	getType := reflect.TypeOf(result).Elem()
 	if getValue.Kind() != reflect.Ptr {
-		Errorf("传进来的result不是一个指针,%v", getValue.Kind())
+		err = Errorf("传进来的result不是一个指针,%v", getValue.Kind())
 	} else {
 		Println("这是个指针")
 	}
 	if getValue.Elem().Kind() != reflect.Struct {
-		Errorf("传进来的result不是一个结构体,%v", getValue.Elem())
+		err = Errorf("传进来的result不是一个结构体,%v", getValue.Elem())
 	} else {
 		Println("这是个结构体")
 	}
 	// 声明节点变量
-	var lastSection string
-	var lastStruct struct
+	var lastFieldName string
 	for index, val := range str {
 		// 去除前后空格
 		line := strings.TrimSpace(val)
@@ -70,30 +70,69 @@ func ParseIni(str []string, result interface{}) {
 		}
 		// 判断是否为开头[，]结尾 且不为空
 		if len(line) > 2 && strings.HasPrefix(line, "[") && strings.HasSuffix(line, "]") {
-			Println("这是一个节点")
-			lastSection := line[1 : len(line)-1]
-			Println("节点名称为", lastSection)
+			lastSectionName := line[1 : len(line)-1]
+			Println("节点名称为", lastSectionName)
+			lastFieldName, err = getFieldName(lastSectionName, getType)
+			if err != nil {
+				Println("这是个错误啊")
+				return err
+			}
+			Println("lastFieldName is ", lastFieldName)
+			continue
 		} else if strings.Contains(line, "=") && strings.Count(line, "=") == 1 {
 			Println("嗯，这不是节点这是一个节点内的元素", line)
 		} else {
 			Printf("小朋友不要乱按键盘，输入有问题，值：%s行号：%d\n", line, index+1)
 		}
-		Println(lastSection,getType)
-		
+		err = parseItem(lastFieldName, line, result)
+		if err != nil {
+			return
+		}
 	}
+	return
 }
 
-func getLastStruct(structName string) struct {
-	for index := 0; index < getType.NumField(); index++ {
-			fieldType := getType.Field(index)
-			tagValue := fieldType.Tag.Get("ini")
-			// Println("value is ", fieldType)
-			// fieldType.Tag.Get(lastSection)
-			Println("tagValue is",tagValue)
-			if tagValue == lastSection {
-				Println("这是一个")
-				structV := getValue.Elem().Field(index)
-				continue
-			}
+func getFieldName(lastSectionName string, typeInfo reflect.Type) (fieldName string, err error) {
+	for index := 0; index < typeInfo.NumField(); index++ {
+		fieldType := typeInfo.Field(index)
+		tagValue := fieldType.Tag.Get("ini")
+		if tagValue == lastSectionName {
+			fieldName = fieldType.Name
+			Println("返回的FiledName is", fieldName)
+			break
 		}
+	}
+	return
+}
+
+func parseItem(lastFieldName string, line string, result interface{}) (err error) {
+	Println(lastFieldName, line)
+	index := strings.Index(line, "=")
+	if index == -1 {
+		err = Errorf("syntax error in line :%s", line)
+		return
+	}
+	key := strings.TrimSpace(line[0:index])
+	val := strings.TrimSpace(line[index+1:])
+	if len(key) == 0 {
+		err = Errorf("sytax error, line:%s", line)
+		return
+	}
+	Println(key, val)
+	resultValue := reflect.ValueOf(result)
+	sectionValue := resultValue.Elem().FieldByName(lastFieldName)
+	sectionType := sectionValue.Type()
+	Println("sectionValue is", sectionValue)
+
+	if sectionValue.Kind() != reflect.Struct {
+		err = Errorf("field:%s must be struct", lastFieldName)
+		return
+	}
+	var itemName string
+	itemName,err = getFieldName(val,sectionType)
+	if err != nil{
+		return
+	}
+	Println(itemName)
+	return
 }

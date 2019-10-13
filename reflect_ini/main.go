@@ -8,5 +8,5 @@ func main() {
 	var configIni ConfigInfo
 	str := ReadFile("conf.ini")
 	Println(str)
-	ParseIni(str, &configIni)
+	_ = ParseIni(str, &configIni)
 }
