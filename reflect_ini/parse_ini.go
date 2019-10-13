@@ -4,6 +4,7 @@ import (
 	. "fmt"
 	"io/ioutil"
 	"reflect"
+	"strconv"
 	"strings"
 	// "errors"
 )
@@ -17,7 +18,7 @@ type Server struct {
 	Port int    `ini:"port"`
 }
 type MySql struct {
-	User     string `ini:"user"`
+	Username string `ini:"username"`
 	Password string `ini:"password"`
 	Host     string `ini:"host"`
 	Port     int    `ini:"port"`
@@ -102,6 +103,9 @@ func getFieldName(lastSectionName string, typeInfo reflect.Type) (fieldName stri
 			break
 		}
 	}
+	if fieldName == "" {
+		err = Errorf("no field name is %s", lastSectionName)
+	}
 	return
 }
 
@@ -129,10 +133,24 @@ func parseItem(lastFieldName string, line string, result interface{}) (err error
 		return
 	}
 	var itemName string
-	itemName,err = getFieldName(val,sectionType)
-	if err != nil{
+	itemName, err = getFieldName(key, sectionType)
+	if err != nil {
+		Println(err)
 		return
 	}
-	Println(itemName)
+	itemValue := sectionValue.FieldByName(itemName)
+	switch itemValue.Kind() {
+	case reflect.String:
+		itemValue.SetString(val)
+	case reflect.Int8, reflect.Int16, reflect.Int, reflect.Int32, reflect.Int64:
+		intVal, errRet := strconv.ParseInt(val,10,64)
+		if errRet != nil{
+			err = errRet
+			return
+		}
+		itemValue.SetInt(intVal)
+	}
+	Println("itemName is", itemName)
+	Println("itemValue is", itemValue)
 	return
 }

@@ -9,4 +9,6 @@ func main() {
 	str := ReadFile("conf.ini")
 	Println(str)
 	_ = ParseIni(str, &configIni)
+	println("===========")
+	Printf("%#v",configIni)
 }
