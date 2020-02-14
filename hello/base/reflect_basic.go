@@ -2,7 +2,7 @@ package base
 
 import (
 	"fmt"
-	. "fmt"
+	_ "fmt"
 	"reflect"
 )
 
@@ -16,27 +16,27 @@ func Reflect_Test() {
 	var v int = 10
 	var i int = v
 	ref_value := reflect.ValueOf(i)
-	Printf("i value Type is %T value is %v\n", ref_value, ref_value)
+	fmt.Printf("i value Type is %T value is %v\n", ref_value, ref_value)
 	// 这里注意是传入的值为指针类型&i，不是直接为&ref_value
 	ref_pointer := reflect.ValueOf(&i)
-	Printf("i pointer Type is %T, point value is %v\n", ref_pointer, ref_pointer)
+	fmt.Printf("i pointer Type is %T, point value is %v\n", ref_pointer, ref_pointer)
 	ref_type := reflect.TypeOf(i)
-	Printf("i Type is %T, Type value is %v\n", ref_type, ref_type)
+	fmt.Printf("i Type is %T, Type value is %v\n", ref_type, ref_type)
 
 	/*
 		将通过reflect.ValueOf获取到的值转换为可以使用的值
 		value.Interface().(类型)
 	*/
-	Println()
+
 	converPointer := ref_pointer.Interface().(*int)
-	Printf("value is %d type is %T\n", converPointer, converPointer)
+	fmt.Printf("value is %d type is %T\n", converPointer, converPointer)
 	converValue := ref_value.Interface().(int)
-	Printf("value is %d type is %T\n", converValue, converValue)
+	fmt.Printf("value is %d type is %T\n", converValue, converValue)
 	// 传入参数后获取类型
 	// p := user{"alex", 22, 100.0}
 	// getAnything(p)
 	// setValues()
-	reflectCallFunc()
+	//reflectCallFunc()
 }
 
 type user struct {
@@ -46,11 +46,11 @@ type user struct {
 }
 
 func (u user) GetName() {
-	Println("My Name is ", u.name)
+	fmt.Println("My Name is ", u.name)
 }
 func (u *user) SetCurName(name string) {
 	u.name = name
-	Println("My Name is ", u.name)
+	fmt.Println("My Name is ", u.name)
 }
 
 func getAnything(input interface{}) {
@@ -64,11 +64,11 @@ func getAnything(input interface{}) {
 	println()
 	// 获取值
 	getValue := reflect.ValueOf(input)
-	Printf("that value is %#v\n", getValue)
+	fmt.Printf("that value is %#v\n", getValue)
 	// 获取Type
 	getType := reflect.TypeOf(input) //等同↓↓↓
 	// getType := getValue.Type()
-	Printf("that type is %s\n", getType.Name())
+	fmt.Printf("that type is %s\n", getType.Name())
 
 	for i := 0; i < getType.NumField(); i++ {
 		field := getType.Field(i)
@@ -97,10 +97,10 @@ func setValues() {
 	// 传入的值必须为指针类型，否则Elem会报错
 	pointer := reflect.ValueOf(&f)
 	newValue := pointer.Elem()
-	Println("pointer is", pointer.Type())
-	Println("newValue 是否可以赋值：", newValue.CanSet())
+	fmt.Println("pointer is", pointer.Type())
+	fmt.Println("newValue 是否可以赋值：", newValue.CanSet())
 	newValue.SetFloat(100)
-	Println("newValue is", newValue)
+	fmt.Println("newValue is", newValue)
 }
 
 func reflectCallFunc() {
@@ -113,11 +113,11 @@ func reflectCallFunc() {
 		score: 100,
 	}
 	p.SetCurName("alex")
-	Println(p)
+	fmt.Println(p)
 
 	p_value := reflect.ValueOf(&p)
 	p_method := p_value.Elem().MethodByName("SetCurName")
 	m_arguments := []reflect.Value{reflect.ValueOf("大蠢猪")}
 	p_method.Call(m_arguments)
-	Print(p)
+	fmt.Print(p)
 }

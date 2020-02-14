@@ -5,7 +5,7 @@ import (
 )
 
 func Array_test() {
-	// 数组初始化的几种方式
+	/* 数组初始化的几种方式 */
 	// 1
 	var arr [5]int //等价于  arr:= [5]int[0,0,0,0,0]
 	Println(len(arr))
@@ -21,7 +21,9 @@ func Array_test() {
 	Println(arr2)
 	Println(len(arr2))
 
-	// 遍历数组
+
+
+	/* 遍历数组 */
 	// 1
 	for i := 0; i < len(arr2); i++ {
 		Printf("index：%d,value:%d\n", i, arr2[i])
@@ -30,7 +32,9 @@ func Array_test() {
 	for _, val := range arr1 {
 		Printf("name is %s\n", val)
 	}
-	// 多维数组
+
+
+	/* 多维数组 */
 	// [有几个数组][每个数组内有几个数]
 	a := [3][4]int{
 		{0, 1, 2, 3},   /*  第一行索引为 0 */
@@ -38,7 +42,9 @@ func Array_test() {
 		{8, 9, 10, 11}, /*  第三行索引为 2,最后一个元素后如果没有}，需要要有， */
 	}
 	Println("第1行的第2个数", a[0][1])
-	// 数组是值类型
+
+
+	/* 数组是值类型 */
 	arr3 := [...]string{"a", "b", "c", "d"}
 	arr4 := arr3 // 将arr3拷贝后赋值给arr4
 	arr4[0] = "alex"

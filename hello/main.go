@@ -54,13 +54,12 @@ func main() {
 	// 结构体
 	// b.Struct_test()
 	// b.Inherit_struct()
-	// 反射 reflect
-	b.Reflect_Test()
 	// b.Struct_function()
 	// 接口
 	// b.Interface_obj()
 	// b.EmptyInterface()
 	// b.InterfaceType()
 	// 反射
-	b.Reflect_test()
+	b.Reflect_Test()
+
 }
